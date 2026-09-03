@@ -1,6 +1,6 @@
-# RunGate Ticketing
+# Eventra Ticketing
 
-RunGate is a multi-tenant event ticketing SaaS prototype. The first product slice focuses on Fun Run operations, but the data model and UI flows are designed for concerts, seminars, workshops, and other event types.
+Eventra is a multi-tenant event ticketing SaaS prototype. The first product slice focuses on Fun Run operations, but the data model and UI flows are designed for concerts, seminars, workshops, and other event types.
 
 ## What Is Included
 
@@ -30,16 +30,14 @@ Midtrans credentials should resolve in this order:
 2. Tenant-level `midtransServerKey` and `midtransClientKey`
 3. Global platform Midtrans config
 
-This lets each event use its own payment gateway when needed while keeping a global fallback.
-
 ## Core Roles
 
-- `SUPERADMIN`: manages platform-wide tenants, global settings, taxonomy, and audit visibility.
-- `TENANT_OWNER`: manages tenant profile, keys, billing, and team members.
-- `EVENT_MANAGER`: creates events, tickets, vouchers, fields, and quota rules.
-- `FINANCE`: reviews orders, payment attempts, settlements, and refunds.
-- `CHECKIN_CREW`: verifies registrants and collection/check-in sessions.
-- `CUSTOMER`: browses events and buys tickets.
+- `SUPERADMIN`: platform settings, tenants, taxonomy, audit visibility.
+- `TENANT_OWNER`: tenant profile, keys, billing, and team members.
+- `EVENT_MANAGER`: events, tickets, vouchers, fields, and quota rules.
+- `FINANCE`: orders, payment attempts, settlements, and refunds.
+- `CHECKIN_CREW`: registrant verification and collection sessions.
+- `CUSTOMER`: browse events and buy tickets.
 
 ## Local Development
 
@@ -48,7 +46,7 @@ npm install
 npm run dev
 ```
 
-On Windows PowerShell, use this build command if the package script's inline environment variable is not recognized:
+On Windows PowerShell, use this build command if inline environment variables are not recognized:
 
 ```powershell
 $env:WRANGLER_LOG_PATH='.wrangler/wrangler.log'; npx vinext build
@@ -56,4 +54,4 @@ $env:WRANGLER_LOG_PATH='.wrangler/wrangler.log'; npx vinext build
 
 ## Database Model
 
-See `prisma/schema.prisma` for the MySQL schema covering tenants, users, roles, event types, events, ticket types, custom fields, vouchers, orders, quota reservations, payment attempts, registrants, collection sessions, check-ins, and audit-ready relationships.
+See `prisma/schema.prisma` for the MySQL schema covering tenants, users, roles, event types, events, ticket types, custom fields, vouchers, orders, quota reservations, payment attempts, registrants, collection sessions, and check-ins.
