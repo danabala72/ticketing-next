@@ -1,11 +1,17 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
-import { events } from "@/lib/demo-data";
+import { prisma } from "@/lib/prisma";
+import { DEMO_TENANT_ID } from "@/lib/constants";
+import { events as fallback } from "@/lib/demo-data";
+export const dynamic = "force-dynamic";
 
-export default function EventsPage() {
+export default async function EventsPage(){
+  let events:any[]=[];
+  try { events=await prisma.event.findMany({where:{tenantId:DEMO_TENANT_ID},include:{_count:{select:{registrations:true}}},orderBy:{startsAt:"desc"}}); }
+  catch { events=fallback.map(e=>({...e,_count:{registrations:e.sold}})); }
   return <AppShell title="Event" action={<Link href="/events/new" className="flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white"><Plus size={17}/>Buat event</Link>}>
-    <div className="mb-5"><h2 className="text-2xl font-bold">Semua event</h2><p className="mt-1 text-sm text-slate-500">Setiap event memiliki landing page, tim admin, form, tiket, dan alur operasional sendiri.</p></div>
-    <div className="grid gap-4 xl:grid-cols-3">{events.map(e => <article key={e.slug} className="rounded-2xl border border-slate-200 bg-white p-5"><div className="flex items-start justify-between gap-3"><span className="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700">{e.type.replace("_"," ")}</span><span className="text-xs text-slate-400">{e.status}</span></div><h3 className="mt-5 text-lg font-semibold">{e.name}</h3><p className="mt-2 text-sm leading-6 text-slate-500">{e.date}<br/>{e.place}</p><div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4"><span className="text-sm"><b>{e.sold}</b> / {e.capacity} peserta</span><Link href={`/e/${e.slug}`} className="text-sm font-semibold text-indigo-600">Landing page →</Link></div></article>)}</div>
-  </AppShell>;
+    <h2 className="text-2xl font-bold">Semua event</h2><p className="mt-1 text-sm text-slate-500">Event tenant dibaca langsung dari database.</p>
+    <div className="mt-6 grid gap-4 xl:grid-cols-3">{events.map(e=><article key={e.id??e.slug} className="rounded-2xl border border-slate-200 bg-white p-5"><span className="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700">{String(e.type).replace("_"," ")}</span><h3 className="mt-5 text-lg font-semibold">{e.name}</h3><p className="mt-2 text-sm text-slate-500">{e.venue??e.place}</p><div className="mt-5 flex justify-between border-t pt-4 text-sm"><b>{e._count?.registrations??0} peserta</b><span className="flex gap-3"><Link className="font-semibold text-indigo-600" href={"/events/"+e.id+"/manage"}>Kelola</Link><Link className="font-semibold text-indigo-600" href={"/e/"+e.slug}>Publik →</Link></span></div></article>)}</div>
+  </AppShell>
 }
