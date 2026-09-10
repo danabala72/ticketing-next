@@ -39,6 +39,7 @@ yarn-error.log*
 # deployment/build
 .vercel
 /dist/
+*.tsbuildinfo
 /.wrangler/
 /outputs/
 /work/
