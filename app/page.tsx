@@ -1,12 +1,13 @@
-import type { Metadata } from "next";
-import { TicketingPlatform } from "./ticketing-platform";
-
-export const metadata: Metadata = {
-  title: "Eventra Ticketing",
-  description:
-    "Multi-tenant ticketing SaaS for fun runs, concerts, seminars, workshops, and collection workflows.",
-};
+import Link from "next/link";
+import { ArrowUpRight, CalendarDays, CircleDollarSign, QrCode, TicketCheck } from "lucide-react";
+import { AppShell } from "@/components/app-shell";
+import { events } from "@/lib/demo-data";
 
 export default function Home() {
-  return <TicketingPlatform />;
+  const cards = [["Tiket terjual", "1.058", TicketCheck, "+18,4%"], ["Pendapatan", "Rp186,4 jt", CircleDollarSign, "+12,8%"], ["Event aktif", "2", CalendarDays, "1 draft"], ["Registrasi ulang", "487", QrCode, "57,8%"]] as const;
+  return <AppShell title="Ringkasan" action={<Link href="/events/new" className="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700">Buat event</Link>}>
+    <section className="mb-7 rounded-3xl bg-gradient-to-br from-indigo-700 via-indigo-600 to-violet-500 p-6 text-white shadow-xl shadow-indigo-100 sm:p-8"><p className="text-sm text-indigo-100">Selamat datang kembali</p><div className="mt-2 flex flex-wrap items-end justify-between gap-4"><div><h2 className="max-w-xl text-2xl font-bold tracking-tight sm:text-3xl">Semua event dan operasional peserta, dalam satu workspace.</h2><p className="mt-3 max-w-2xl text-sm leading-6 text-indigo-100">Kelola penjualan tiket, admin event, formulir peserta, dan registrasi ulang on-site.</p></div><Link href="/e/bali-sunrise-fun-run-2026" className="flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-indigo-700">Lihat landing page <ArrowUpRight size={17}/></Link></div></section>
+    <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{cards.map(([label,value,Icon,note]) => <article key={label} className="rounded-2xl border border-slate-200 bg-white p-5"><div className="flex items-center justify-between"><span className="grid size-10 place-items-center rounded-xl bg-indigo-50 text-indigo-600"><Icon size={19}/></span><span className="text-xs font-medium text-emerald-600">{note}</span></div><p className="mt-5 text-sm text-slate-500">{label}</p><p className="mt-1 text-2xl font-bold">{value}</p></article>)}</section>
+    <section className="mt-7 overflow-hidden rounded-2xl border border-slate-200 bg-white"><div className="flex items-center justify-between border-b border-slate-200 p-5"><div><h2 className="font-semibold">Event terbaru</h2><p className="mt-1 text-sm text-slate-500">Pantau kapasitas dan status publikasi.</p></div><Link href="/events" className="text-sm font-semibold text-indigo-600">Lihat semua</Link></div><div className="divide-y divide-slate-100">{events.map(e => <Link href={`/e/${e.slug}`} key={e.slug} className="grid gap-3 p-5 transition hover:bg-slate-50 sm:grid-cols-[1fr_150px_150px_auto] sm:items-center"><div><p className="font-medium">{e.name}</p><p className="mt-1 text-sm text-slate-500">{e.date} · {e.place}</p></div><span className="text-sm text-slate-600">{e.type.replace("_", " ")}</span><div><p className="text-sm font-medium">{e.sold}/{e.capacity}</p><div className="mt-2 h-1.5 rounded-full bg-slate-100"><div className="h-full rounded-full bg-indigo-500" style={{width:`${e.sold/e.capacity*100}%`}}/></div></div><span className={`w-fit rounded-full px-2.5 py-1 text-xs font-semibold ${e.status === "PUBLISHED" ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"}`}>{e.status}</span></Link>)}</div></section>
+  </AppShell>;
 }
