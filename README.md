@@ -1,57 +1,29 @@
 # Eventra Ticketing
 
-Eventra is a multi-tenant event ticketing SaaS prototype. The first product slice focuses on Fun Run operations, but the data model and UI flows are designed for concerts, seminars, workshops, and other event types.
+Scaffolding SaaS ticketing multi-tenant untuk Fun Run dan Seminar/Webinar.
 
-## What Is Included
+## Cakupan awal
 
-- Public event marketplace with upcoming, ongoing, and past event states.
-- Checkout flow with quota reservation, custom registration fields, voucher discount, and payment state machine.
-- Tenant admin dashboard for event setup, ticket types, regular/special pricing, voucher rules, quota, registration fields, and material or race pack collection.
-- Collection and check-in verification screen with registrant status handling.
-- Superadmin view for tenant onboarding, global Midtrans fallback, roles, taxonomy, settlement, and audit needs.
-- Prisma MySQL schema blueprint for production backend implementation.
-- Dummy Fun Run seed-style content embedded in the UI.
+- Tenant dapat membuat banyak event dan menetapkan admin per event.
+- Landing page publik unik di `/e/[slug]`.
+- Preset form dinamis untuk Fun Run dan Seminar/Webinar.
+- Midtrans milik tenant atau gateway global Eventra.
+- Registrasi ulang on-site, verifikasi identitas, nomor BIB, race pack, dan check-in.
+- Superadmin untuk tenant dan konfigurasi platform.
 
-## Suggested Production Stack
-
-- Next.js app router
-- Prisma ORM
-- MySQL
-- Midtrans Snap/Core API
-- NextAuth/Auth.js or Clerk for authentication
-- Background worker for quota expiry and payment reconciliation
-- Object storage for QR assets, invoices, and exported attendee lists
-
-## Payment Configuration Rule
-
-Midtrans credentials should resolve in this order:
-
-1. Event-level `midtransServerKey` and `midtransClientKey`
-2. Tenant-level `midtransServerKey` and `midtransClientKey`
-3. Global platform Midtrans config
-
-## Core Roles
-
-- `SUPERADMIN`: platform settings, tenants, taxonomy, audit visibility.
-- `TENANT_OWNER`: tenant profile, keys, billing, and team members.
-- `EVENT_MANAGER`: events, tickets, vouchers, fields, and quota rules.
-- `FINANCE`: orders, payment attempts, settlements, and refunds.
-- `CHECKIN_CREW`: registrant verification and collection sessions.
-- `CUSTOMER`: browse events and buy tickets.
-
-## Local Development
+## Menjalankan
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
-On Windows PowerShell, use this build command if inline environment variables are not recognized:
+Salin `.env.example` menjadi `.env` dan isi koneksi MySQL. UI saat ini memakai data demo agar seluruh halaman dapat langsung dilihat tanpa database.
 
-```powershell
-$env:WRANGLER_LOG_PATH='.wrangler/wrangler.log'; npx vinext build
-```
+## Tahap implementasi berikutnya
 
-## Database Model
-
-See `prisma/schema.prisma` for the MySQL schema covering tenants, users, roles, event types, events, ticket types, custom fields, vouchers, orders, quota reservations, payment attempts, registrants, collection sessions, and check-ins.
+1. Autentikasi dan pembatasan tenant/event.
+2. Prisma migration dan seed.
+3. CRUD event, form builder, tiket, voucher, dan admin event.
+4. Midtrans Snap serta webhook idempotent.
+5. Scanner QR dan state machine registrasi on-site.
